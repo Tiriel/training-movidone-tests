@@ -1,0 +1,43 @@
+name: "Git Bundle"
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  SENSIOLABS_BOT_EMAIL: "bot@sensiolabs.com"
+  SENSIOLABS_BOT_NAME: "sensiolabs-bot"
+
+jobs:
+  git-bundle:
+    name: "Git Bundle repository"
+
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - if: github.actor != 'dependabot[bot]'
+        name: "Checkout"
+        uses: "actions/checkout@v4"
+        with:
+          ref: "${{ github.head_ref }}"
+          fetch-depth: 2
+          # Must be used to be able to commit changed files
+          token: "${{ secrets.SENSIOLABS_BOT_TOKEN }}"
+
+      - name: "Bundling repository"
+        run: |
+          echo "=== Last 5 Git tags ==="
+          git tag --sort=-version:refname | head -n 5
+
+          echo "=== Bundling repository==="
+          git bundle create training-sensio-event --tags
+
+      - name: "Commit exported files"
+        uses: "stefanzweifel/git-auto-commit-action@v5.0.1"
+        with:
+          branch: "${{ github.head_ref }}"
+          commit_author: "${{ env.SENSIOLABS_BOT_NAME }} <${{ env.SENSIOLABS_BOT_EMAIL }}>"
+          commit_message: "Update Git Bundle"
+          commit_user_email: "${{ env.SENSIOLABS_BOT_EMAIL }}"
+          commit_user_name: "${{ env.SENSIOLABS_BOT_NAME }}"

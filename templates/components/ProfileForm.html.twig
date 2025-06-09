@@ -1,0 +1,74 @@
+<div{{ attributes }}>
+    {% if flash %}
+        <div class="alert alert-success">{{ flash }}</div>
+    {% endif %}
+
+    <div class="d-flex">
+        {% if isEditing %}
+            {{ form_start(form) }}
+                <div class="row align-items-center mb-2">
+                        <div class="col-4">
+                            <label class="fs-5 fw-bold" for="profile.skills">Useful Skills:</label>
+                        </div>
+                        <div class="col-8">
+                            {{ form_widget(form.skills) }}
+                        </div>
+                </div>
+
+                <div class="row align-items-center mb-2">
+                    <div class="col-4">
+                        <label class="fs-5 fw-bold" for="profile.interests">Interests:</label>
+                    </div>
+                        <div class="col-8">
+                            {{ form_widget(form.interests) }}
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-text">
+                                <a
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#new-tag-modal"
+                                >+ Add Tag
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <button
+                        data-action="live#action:prevent"
+                        data-live-action-param="save"
+                        class="btn btn-outline btn-outline-{{ _errors.has('profile') ? 'danger' : 'secondary' }}"
+                >Save</button>
+        {{ form_end(form) }}
+        {% else %}
+            <div>
+            <div class="row g-3">
+                <p class="col fs-5"><strong>Useful Skills:</strong> {{ profile.skills|map(skill => skill.name)|join(', ') }}</p>
+            </div>
+            <div class="row g-3">
+                <p class="col fs-5"><strong>Interests:</strong> {{ profile.interests|map(tag => tag.name)|join(', ') }}</p>
+            </div>
+            <div class="d-grip gap-2">
+                <button
+                        type="button"
+                        data-action="live#action"
+                        data-live-action-param="editProfile"
+                        class="btn btn-secondary"
+                        title="Click to edit!"
+                >
+                    Edit
+                    <twig:ux:icon name="bi:pencil-fill" class="float-start d-inline" />
+                </button>
+            </div>
+            </div>
+        {% endif %}
+    </div>
+    {% component BootstrapModal with {id: 'new-tag-modal'} %}
+        {% block modal_header %}
+            <h5>Add a Tag</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        {% endblock %}
+        {% block modal_body %}
+            <twig:NewTagForm />
+        {% endblock %}
+    {% endcomponent %}
+</div>

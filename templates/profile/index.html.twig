@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block body %}
+<section id="profile-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 m-auto">
+                <h1 class="fw-bolder" style="color: limegreen;">Profile</h1>
+
+                <p class="fs-3"><strong style="color: limegreen;">Email:</strong> {{ user.email }}</p>
+
+                <h3 style="color: limegreen;">Preferences:</h3>
+                <twig:ProfileForm :profile="user.volunteerProfile"/>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

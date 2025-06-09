@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }} - Details{% endblock %}
+
+{% block body %}
+    <div class="container flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-md-8 m-auto">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h1 class="fw-bold" style="color: limegreen;">{{ event.name }}</h1>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between mt-4">
+                                <div>
+                                    <p>From <span
+                                                class="fw-semibold">{{ event.startAt|date('d/m/y') }}</span> to
+                                        <span class="fw-semibold">{{ event.endAt|date('d/m/y') }}</span></p>
+                                    {% if event.project is not null %}
+                                        <p class="my-0">Project: <a href="{{ path('app_project_show', {id: event.project.id}) }}">{{ event.project.name }}</a></p>
+                                    {% endif %}
+                                    {% set orgs = [] %}
+                                    {% for orga in event.organizations %}
+                                        {% set orgs = orgs|merge([{link: path('app_organization_show', {id: orga.id}), name: orga.name}]) %}
+                                    {% endfor %}
+                                    <p class="my-0">Organizations: {{ orgs|map(o => '<a href="'~o.link~'">'~o.name~'</a>')|join(', ')|raw }}</p>
+                                    <p>Accessible
+                                        : {{ event.accessible ? '<span style="color: limegreen;">Yes</span>' : '<span style="color: red;">No</span>' }}</p>
+                                </div>
+                                <p class="fst-italic">{{ event.volunteers.count }} volunteers yet.</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <p class="text-muted">{{ event.prerequisites|default('No prerequisites') }}</p>
+                            <p class="">{{ event.description }}</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 m-auto justify-content-start">
+                <a href="{{ path('app_volunteer_new', {'event': event.id}) }}">
+                    <button class="btn text-white" style="background-color: limegreen;">Volunteer on this event</button>
+                </a>
+                <a href="{{ path('app_event_list') }}">
+                    <button class="btn text-black bg-white" style="border-color: limegreen;">Back</button>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

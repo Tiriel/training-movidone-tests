@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ path('app_main_index') }}">Sensio<span style="color: limegreen;">Events</span></a>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a href="{{ path('app_main_index') }}" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_main_contact') }}" class="nav-link">Contact</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_event_list') }}" class="nav-link">Events</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('app_project_list') }}" class="nav-link">Projects</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            {% if app.user %}
+                <li class="nav-item">
+                    <a href="{{ path('app_profile') }}" class="nav-link">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_logout') }}" class="nav-link">Logout</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{{ path('app_register') }}" class="nav-link">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_login') }}" class="nav-link">Login</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

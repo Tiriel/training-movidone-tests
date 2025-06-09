@@ -1,0 +1,117 @@
+<div{{ attributes }}>
+    <form
+            data-action="live#action:prevent"
+            data-live-action-param="saveProject"
+    >
+        <div class="row align-items-center">
+            <div class="col-3">
+                <label for="project-name">Project name:</label>
+            </div>
+            <div class="col-6">
+                <input
+                        type="text"
+                        data-model="name"
+                        class="form-control {{ _errors.has('name') ? 'is-invalid' }}"
+                        id="project-name"
+                >
+                {% if _errors.has('name') %}
+                    <div class="invalid-feedback">
+                        {{ _errors.get('name') }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-3">
+            <div class="col-3">
+                <label for="project-summary">Summary:</label>
+            </div>
+            <div class="col-6">
+                <textarea
+                        data-model="summary"
+                        class="form-control {{ _errors.has('price') ? 'is-invalid' }}"
+                        id="project-summary"
+                ></textarea>
+                {% if _errors.has('summary') %}
+                    <div class="invalid-feedback">
+                        {{ _errors.get('summary') }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-3">
+            <div class="col-3">
+                <label for="project-organizations">Organizations:</label>
+            </div>
+            <div class="col-6">
+                <select
+                        data-model="organizations"
+                        id="project-organizations"
+                        class="form-control {{ _errors.has('organizations') ? 'is-invalid' }}"
+                        multiple
+                        {{ stimulus_controller('symfony/ux-autocomplete/autocomplete') }}
+                >
+                    <option value="">Choose an organization</option>
+                    {% for org_option in allOrgs %}
+                        <option value="{{ org_option.id }}" {{ this.isOrgSelected(org_option) ? 'selected' }}>{{ org_option.name }}</option>
+                    {% endfor %}
+                </select>
+                {% if _errors.has('organizations') %}
+                    <div class="invalid-feedback">
+                        {{ _errors.get('organizations') }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-auto">
+                <div class="form-text">
+                    <a
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#new-org-modal"
+                    >+ Add Organization
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-3">
+            <div class="col-3">
+                <label for="project-tags">Tags:</label>
+            </div>
+            <div class="col-6">
+                <select
+                        data-model="tags"
+                        id="project-tags"
+                        class="form-control {{ _errors.has('tags') ? 'is-invalid' }}"
+                        multiple
+                        {{ stimulus_controller('symfony/ux-autocomplete/autocomplete') }}
+                >
+                    <option value="">Choose tags</option>
+                    {% for tag_option in allTags %}
+                        <option value="{{ tag_option.id }}" {{ this.isTagSelected(tag_option) ? 'selected' }}>{{ tag_option.name }}</option>
+                    {% endfor %}
+                </select>
+                {% if _errors.has('tags') %}
+                    <div class="invalid-feedback">
+                        {{ _errors.get('tags') }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-auto">
+                <div class="form-text">
+                    <a
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#new-tag-modal"
+                    >+ Add Tag
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Save Project</button>
+        </div>
+    </form>
+</div>

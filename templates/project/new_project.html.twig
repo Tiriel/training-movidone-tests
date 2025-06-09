@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'New project' %}
+
+{% block body %}
+    <section class="container row row-cols-1">
+        <div class="col-md-8 mx-auto">
+            <h1>New project</h1>
+        </div>
+
+        <twig:NewProjectForm redirect="true" />
+
+        {% component BootstrapModal with {id: 'new-org-modal'} %}
+            {% block modal_header %}
+                <h5>Add an Organization</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            {% endblock %}
+            {% block modal_body %}
+                <twig:NewOrganizationForm />
+            {% endblock %}
+        {% endcomponent %}
+    </section>
+{% endblock %}
