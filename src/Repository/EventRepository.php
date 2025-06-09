@@ -50,7 +50,7 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
 
         return $qb->andWhere($qb->expr()->like('e.name', ':name'))
-            ->setParameter('name', sprintf("%%%s%%", $name))
+            ->setParameter('name', sprintf('%%%s%%', $name))
             ->getQuery()
             ->getResult();
     }
@@ -61,7 +61,7 @@ class EventRepository extends ServiceEntityRepository
         $tagIds = $user
             ->getVolunteerProfile()
             ->getInterests()
-            ->map(fn(Tag $tag) => $tag->getId());
+            ->map(fn (Tag $tag) => $tag->getId());
 
         return $qb
             ->innerJoin('e.tags', 't')
@@ -79,7 +79,7 @@ class EventRepository extends ServiceEntityRepository
         $skillIds = $user
             ->getVolunteerProfile()
             ->getSkills()
-            ->map(fn(Skill $skill) => $skill->getId());
+            ->map(fn (Skill $skill) => $skill->getId());
 
         return $qb
             ->innerJoin('e.neededSkills', 's')

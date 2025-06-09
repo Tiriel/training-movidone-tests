@@ -24,11 +24,10 @@ class ProjectRepository extends ServiceEntityRepository
 
     /**
      * @param Organization[] $organizations
-     * @return array
      */
     public function findForOrganizations(array $organizations): array
     {
-        $organizations = \array_map(fn(Organization $organization) => $organization->getId(), $organizations);
+        $organizations = \array_map(fn (Organization $organization) => $organization->getId(), $organizations);
         $organizations = implode(', ', $organizations);
 
         $qb = $this->createQueryBuilder('p');

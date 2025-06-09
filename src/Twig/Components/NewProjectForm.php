@@ -2,9 +2,7 @@
 
 namespace App\Twig\Components;
 
-use App\Entity\Organization;
 use App\Entity\Project;
-use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Clock\ClockAwareTrait;
@@ -45,7 +43,8 @@ final class NewProjectForm
     public function __construct(
         private readonly EntityManagerInterface $manager,
         private readonly UrlGeneratorInterface $urlGenerator,
-    ) {}
+    ) {
+    }
 
     #[LiveAction]
     public function saveProject(#[CurrentUser] User $user, EntityManagerInterface $manager): ?RedirectResponse

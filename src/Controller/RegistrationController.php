@@ -26,11 +26,11 @@ class RegistrationController extends AbstractController
             $user
                 ->setApiKey()
                 ->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
 
             $entityManager->persist($user);
             $entityManager->flush();

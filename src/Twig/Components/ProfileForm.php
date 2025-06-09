@@ -3,10 +3,8 @@
 namespace App\Twig\Components;
 
 use App\Entity\Tag;
-use App\Entity\User;
 use App\Entity\VolunteerProfile;
 use App\Form\VolunteerProfileType;
-use Cassandra\Type\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -19,7 +17,6 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\ValidatableComponentTrait;
-use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
 
 #[AsLiveComponent]
 final class ProfileForm extends AbstractController
@@ -38,7 +35,8 @@ final class ProfileForm extends AbstractController
 
     public function __construct(
         private readonly EntityManagerInterface $manager,
-    ) {}
+    ) {
+    }
 
     #[LiveListener('tag:created')]
     public function onTagCreated(#[LiveArg] Tag $tag): void

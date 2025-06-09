@@ -3,7 +3,6 @@
 namespace App\Twig\Components;
 
 use App\Entity\Event;
-use App\Entity\Organization;
 use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -60,7 +59,7 @@ final class NewEventForm
 
     public function __construct(
         private readonly EntityManagerInterface $manager,
-        private readonly UrlGeneratorInterface  $urlGenerator,
+        private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
 

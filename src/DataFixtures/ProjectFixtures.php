@@ -19,7 +19,7 @@ class ProjectFixtures extends Fixture implements DependentFixtureInterface
             ->setSummary('Ongoing effort for the SymfonyLive events organization every year.')
             ->setCreatedAt(new \DateTimeImmutable('01-01-2000'));
 
-        for ($i = 15; $i <= 25; $i++) {
+        for ($i = 15; $i <= 25; ++$i) {
             $project->addEvent($this->getReference(EventFixtures::SF_LIVE.$i, Event::class));
         }
 

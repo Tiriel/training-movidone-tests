@@ -30,7 +30,6 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $profile->addSkill($this->getReference(SkillFixtures::SKILL_NAME.$name, Skill::class));
         }
 
-
         foreach ((array) array_rand(TagFixtures::TAGS, rand(2, 4)) as $key) {
             $name = TagFixtures::TAGS[$key];
             $profile->addInterest($this->getReference(TagFixtures::TAG_NAME.$name, Tag::class));

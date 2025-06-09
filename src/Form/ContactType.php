@@ -19,25 +19,25 @@ class ContactType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Length(min: 5),
-                ]
+                ],
             ])
             ->add('email', EmailType::class, [
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Email(),
-                ]
+                ],
             ])
             ->add('subject', TextType::class, [
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(min: 10)
-                ]
+                    new Assert\Length(min: 10),
+                ],
             ])
             ->add('message', TextareaType::class, [
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Length(min: 20),
-                ]
+                ],
             ])
         ;
     }

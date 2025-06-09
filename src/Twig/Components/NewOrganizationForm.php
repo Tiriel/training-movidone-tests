@@ -34,7 +34,8 @@ final class NewOrganizationForm
 
     public function __construct(
         private readonly EntityManagerInterface $manager,
-    ) {}
+    ) {
+    }
 
     #[LiveAction]
     public function saveOrganization(#[CurrentUser] User $user, EntityManagerInterface $manager): void

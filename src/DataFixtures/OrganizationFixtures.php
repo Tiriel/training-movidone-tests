@@ -18,7 +18,7 @@ class OrganizationFixtures extends Fixture implements DependentFixtureInterface
             ->setCreatedAt(new \DateTimeImmutable('2018'))
             ->setPresentation('Symfony SAS is the company behind Symfony, the PHP Open-Source framework.')
         ;
-        for ($i = 15; $i <= 25; $i++) {
+        for ($i = 15; $i <= 25; ++$i) {
             $org->addEvent($this->getReference(EventFixtures::SF_LIVE.$i, Event::class));
         }
         $org->addProject($this->getReference(ProjectFixtures::SFLIVE_PROJECT, Project::class));

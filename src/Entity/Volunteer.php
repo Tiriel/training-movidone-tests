@@ -123,10 +123,10 @@ class Volunteer
         }
 
         if (null === $this->getEvent() && null === $this->getProject()) {
-            $context->buildViolation("You have to select and event or a project, or both")
+            $context->buildViolation('You have to select and event or a project, or both')
                 ->atPath('event')
                 ->addViolation();
-            $context->buildViolation("You have to select and event or a project, or both")
+            $context->buildViolation('You have to select and event or a project, or both')
                 ->atPath('project')
                 ->addViolation();
         }
@@ -135,8 +135,7 @@ class Volunteer
             && $this->getProject() instanceof Project
             && !$this->getProject()->getEvents()->contains($this->getEvent())
         ) {
-
-            $context->buildViolation("You have to select an event from the chosen project")
+            $context->buildViolation('You have to select an event from the chosen project')
                 ->atPath('event')
                 ->addViolation();
         }

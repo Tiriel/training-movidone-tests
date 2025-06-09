@@ -14,7 +14,7 @@ class EventFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        for ($i = 15; $i <= 25; $i++) {
+        for ($i = 15; $i <= 25; ++$i) {
             $year = '20'.$i;
             $event = (new Event())
                 ->setName('SymfonyLive '.$year)
@@ -33,7 +33,6 @@ class EventFixtures extends Fixture implements DependentFixtureInterface
             $manager->flush();
             $this->addReference(self::SF_LIVE.$i, $event);
         }
-
     }
 
     public function getDependencies(): array

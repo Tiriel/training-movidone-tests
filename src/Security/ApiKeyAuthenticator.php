@@ -30,23 +30,23 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-         return $request->headers->has('X-AUTH-TOKEN');
+        return $request->headers->has('X-AUTH-TOKEN');
     }
 
     public function authenticate(Request $request): Passport
     {
-         $apiKey = $request->headers->get('X-AUTH-TOKEN');
-         if (null === $apiKey) {
+        $apiKey = $request->headers->get('X-AUTH-TOKEN');
+        if (null === $apiKey) {
             // The token header was empty, authentication fails with HTTP Status
             // Code 401 "Unauthorized"
-             throw new CustomUserMessageAuthenticationException('No API token provided');
-         }
+            throw new CustomUserMessageAuthenticationException('No API token provided');
+        }
 
         // implement your own logic to get the user identifier from `$apiToken`
         // e.g. by looking up a user in the database using its API key
-         $user = $this->repository->findOneBy(['apiKey' => $apiKey]);
+        $user = $this->repository->findOneBy(['apiKey' => $apiKey]);
 
-         return new SelfValidatingPassport(new UserBadge($user->getUserIdentifier()));
+        return new SelfValidatingPassport(new UserBadge($user->getUserIdentifier()));
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response

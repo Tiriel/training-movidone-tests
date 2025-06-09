@@ -2,8 +2,6 @@
 
 namespace App\EventListener;
 
-use App\Entity\Event;
-use App\Entity\Organization;
 use App\Parser\ApiResultParser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;

@@ -12,11 +12,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class ApiResultParser
 {
     protected bool $isOrgOrAdmin = false;
+
     public function __construct(
         protected readonly EntityManagerInterface $manager,
         protected readonly ApiToEventTransformer $eventTransformer,
         protected readonly ApiToOrganizationTransformer $organizationTransformer,
-        protected readonly AuthorizationCheckerInterface $checker
+        protected readonly AuthorizationCheckerInterface $checker,
     ) {
         $this->isOrgOrAdmin = $this->checker->isGranted('ROLE_ORGANIZER') || $this->checker->isGranted('ROLE_WEBSITE');
     }
@@ -36,7 +37,7 @@ class ApiResultParser
             }
 
             return $event;
-        },$results);
+        }, $results);
     }
 
     private function findOrCreateEvent(array $apiEvent): Event
@@ -45,7 +46,7 @@ class ApiResultParser
             ->getRepository(Event::class)
             ->findOneBy([
                 'name' => $apiEvent['name'],
-                'startAt' => new \DateTimeImmutable($apiEvent['startDate'])
+                'startAt' => new \DateTimeImmutable($apiEvent['startDate']),
             ]);
 
         if (null === $event) {

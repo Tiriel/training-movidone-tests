@@ -11,8 +11,7 @@ class EventsApiConsumer implements EventSearchInterface
 {
     public function __construct(
         private readonly HttpClientInterface $eventsClient,
-    )
-    {
+    ) {
     }
 
     public function searchByName(?string $name = null): array

@@ -12,18 +12,11 @@ use Symfony\UX\Autocomplete\EntityAutocompleterInterface;
 #[AutoconfigureTag('ux.entity_autocompleter', ['alias' => 'tag'])]
 class TagAutocompleter implements EntityAutocompleterInterface
 {
-
-    /**
-     * @inheritDoc
-     */
     public function getEntityClass(): string
     {
         return Tag::class;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function createFilteredQueryBuilder(EntityRepository $repository, string $query): QueryBuilder
     {
         return $repository->createQueryBuilder('tag')
@@ -31,25 +24,16 @@ class TagAutocompleter implements EntityAutocompleterInterface
             ->setParameter('query', '%'.$query.'%');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getLabel(object $entity): string
     {
         return $entity->getName();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getValue(object $entity): mixed
     {
         return $entity->getId();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isGranted(Security $security): bool
     {
         return true;

@@ -12,7 +12,7 @@ class CacheableEventSearch implements EventSearchInterface
     public function __construct(
         private readonly EventSearchInterface $inner,
         private readonly CacheInterface $cache,
-    ){
+    ) {
     }
 
     public function searchByName(?string $name = null): array

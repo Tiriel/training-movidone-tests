@@ -3,7 +3,6 @@
 namespace App\Search;
 
 use App\Repository\EventRepository;
-use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 
 class DatabaseEventSearch implements EventSearchInterface
 {
