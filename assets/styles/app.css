@@ -1,3 +1,23 @@
 body {
     background-color: white;
 }
+
+/* Address Component */
+.address-component .address-details {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.address-component .address-text {
+    flex: 1;
+}
+
+.address-component .btn-link {
+    padding: 0.25rem;
+    color: var(--bs-secondary);
+}
+
+.address-component .btn-link:hover {
+    color: var(--bs-primary);
+}

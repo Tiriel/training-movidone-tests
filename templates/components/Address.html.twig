@@ -1,0 +1,56 @@
+<div {{ attributes.defaults({class: 'address-component'}) }}>
+    {% if this.hasAddress %}
+        <div class="address-details d-grid">
+            <div>
+                <div class="row g-3">
+                    <div class="d-inline">
+                        <twig:ux:icon name="bi:map" height="16px"/>
+                        <span class="address-text d-inline">{{ this.formattedAddress }}</span>
+                    </div>
+                </div>
+                {% if this.hasCoordinates %}
+{#                    <div class="row g-3">#}
+                        <a href="{{ this.googleMapsUrl }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn-link btn-sm text-decoration-none"
+                           title="View on Google Maps">
+                            <span>View on Google Maps</span>
+                            <twig:ux:icon name="bi:box-arrow-up-right" class="d-inline" height="16px"/>
+                        </a>
+{#                    </div>#}
+                {% endif %}
+
+                {% if this.showEditLink == true %}
+                    <div class="float-end">
+                        <a href="{{ path('app_profile_address') }}"
+                           class="btn btn-outline-secondary text-decoration-none"
+                           title="Edit address">
+                            <span>Edit</span>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="text-muted d-flex">
+            <twig:ux:icon name="bi:map" class="float-start d-inline" height="16px"/>
+            {% if this.showEditLink %}
+                <div>
+                    <div class="row g-3">
+                        <p class="col fs-5">
+                            No address provided.
+                        </p>
+                    </div>
+                    <div class="float-end">
+                        <a href="{{ path('app_profile_address') }}" class="btn btn-outline-secondary btn-sm">
+                            Add
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                No address available
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

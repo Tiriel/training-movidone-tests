@@ -13,6 +13,8 @@
 
                 <h3 style="color: limegreen;">Preferences:</h3>
                 <twig:ProfileForm :profile="user.volunteerProfile"/>
+                <h3 style="color: limegreen;">Location:</h3>
+                <twig:Address :profile="user.volunteerProfile" showEditLink="true"/>
             </div>
         </div>
     </div>
