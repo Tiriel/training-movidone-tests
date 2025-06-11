@@ -17,6 +17,8 @@ class CacheableEventSearch implements EventSearchInterface
 
     public function searchByName(?string $name = null): array
     {
+        $name ??= 'sensio_events';
+
         return $this->cache->get(md5($name), function (ItemInterface $item) use ($name) {
             $item->expiresAfter(3600);
 

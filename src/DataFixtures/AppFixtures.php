@@ -6,6 +6,8 @@ use App\Entity\Skill;
 use App\Entity\Tag;
 use App\Entity\User;
 use App\Entity\VolunteerProfile;
+use App\Factory\EventFactory;
+use App\Factory\ProjectFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
