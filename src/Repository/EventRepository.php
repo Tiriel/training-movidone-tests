@@ -55,13 +55,15 @@ class EventRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findForTags(User $user): iterable
+    /**
+     * Find events that have any of the given tags.
+     *
+     * @param array<int> $tagIds Array of tag IDs to match against
+     * @return array<Event>
+     */
+    public function findForTags(array $tagIds): array
     {
         $qb = $this->createQueryBuilder('e');
-        $tagIds = $user
-            ->getVolunteerProfile()
-            ->getInterests()
-            ->map(fn (Tag $tag) => $tag->getId());
 
         return $qb
             ->innerJoin('e.tags', 't')
@@ -73,13 +75,15 @@ class EventRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findForSkills(User $user): iterable
+    /**
+     * Find events that require any of the given skills.
+     *
+     * @param array<int> $skillIds Array of skill IDs to match against
+     * @return array<Event>
+     */
+    public function findForSkills(array $skillIds): array
     {
         $qb = $this->createQueryBuilder('e');
-        $skillIds = $user
-            ->getVolunteerProfile()
-            ->getSkills()
-            ->map(fn (Skill $skill) => $skill->getId());
 
         return $qb
             ->innerJoin('e.neededSkills', 's')
@@ -89,5 +93,67 @@ class EventRepository extends ServiceEntityRepository
             ->orderBy($qb->expr()->count('s.id'), 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Find events within a certain distance of a location.
+     *
+     * @param float $latitude The latitude of the center point
+     * @param float $longitude The longitude of the center point
+     * @param float $maxDistanceKm The maximum distance in kilometers
+     * @return array<Event>
+     */
+    public function findByLocation(float $latitude, float $longitude, float $maxDistanceKm): array
+    {
+        // Using the Haversine formula in SQL to calculate distances
+        $sql = '
+            SELECT e.*, 
+                   (6371 * acos(cos(radians(:lat)) * cos(radians(e.latitude)) 
+                   * cos(radians(e.longitude) - radians(:lon)) 
+                   + sin(radians(:lat)) * sin(radians(e.latitude)))) AS distance
+            FROM event e
+            WHERE e.latitude IS NOT NULL 
+              AND e.longitude IS NOT NULL
+              AND (6371 * acos(cos(radians(:lat)) * cos(radians(e.latitude)) 
+                   * cos(radians(e.longitude) - radians(:lon)) 
+                   + sin(radians(:lat)) * sin(radians(e.latitude)))) <= :dist
+            ORDER BY distance ASC
+        ';
+
+        $em = $this->getEntityManager();
+        $query = $em->createNativeQuery($sql, $this->createResultSetMappingForEvent());
+        $query->setParameters([
+            'lat' => $latitude,
+            'lon' => $longitude,
+            'dist' => $maxDistanceKm,
+        ]);
+
+        return $query->getResult();
+    }
+
+    /**
+     * Create a ResultSetMapping for the Event entity.
+     */
+    private function createResultSetMappingForEvent(): \Doctrine\ORM\Query\ResultSetMapping
+    {
+        $rsm = new \Doctrine\ORM\Query\ResultSetMapping();
+        $rsm->addEntityResult(Event::class, 'e');
+        
+        // Map all fields from the Event entity
+        $rsm->addFieldResult('e', 'id', 'id');
+        $rsm->addFieldResult('e', 'name', 'name');
+        $rsm->addFieldResult('e', 'description', 'description');
+        $rsm->addFieldResult('e', 'accessible', 'accessible');
+        $rsm->addFieldResult('e', 'prerequisites', 'prerequisites');
+        $rsm->addFieldResult('e', 'start_at', 'startAt');
+        $rsm->addFieldResult('e', 'end_at', 'endAt');
+        $rsm->addFieldResult('e', 'address', 'address');
+        $rsm->addFieldResult('e', 'latitude', 'latitude');
+        $rsm->addFieldResult('e', 'longitude', 'longitude');
+        $rsm->addFieldResult('e', 'postal_code', 'postalCode');
+        $rsm->addFieldResult('e', 'city', 'city');
+        $rsm->addFieldResult('e', 'country', 'country');
+
+        return $rsm;
     }
 }

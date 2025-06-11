@@ -2,21 +2,26 @@
 
 namespace App\Matching\Strategy;
 
+use App\Entity\Event;
 use App\Entity\Volunteer;
-use App\Repository\VolunteerRepository;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class SkillBasedStrategy implements MatchingStrategyInterface
 {
     public function __construct(
-        private readonly VolunteerRepository $volunteerRepository,
+        private readonly EventRepository $eventRepository,
     ) {
     }
 
     public function match(Volunteer $volunteer): array
     {
-        $volunteerSkills = $volunteer->getVolunteerProfile()?->getSkills() ?? new Collection();
+        $volunteerProfile = $volunteer->getVolunteerProfile();
+        if (!$volunteerProfile) {
+            return [];
+        }
 
+        $volunteerSkills = $volunteerProfile->getSkills();
         if ($volunteerSkills->isEmpty()) {
             return [];
         }
@@ -26,27 +31,28 @@ class SkillBasedStrategy implements MatchingStrategyInterface
             $volunteerSkills->toArray()
         );
 
-        $matches = $this->volunteerRepository->findBySharedSkills($skillIds, $volunteer->getId());
+        // Find events that require any of the volunteer's skills
+        $events = $this->eventRepository->findForSkills($skillIds);
 
-        // Sort matches by number of shared skills
-        usort($matches, function (Volunteer $a, Volunteer $b) use ($skillIds) {
-            $aSkills = $a->getVolunteerProfile()?->getSkills() ?? new Collection();
-            $bSkills = $b->getVolunteerProfile()?->getSkills() ?? new Collection();
+        // Sort events by number of matching skills (most matches first)
+        usort($events, function (Event $a, Event $b) use ($skillIds) {
+            $aSkills = $a->getNeededSkills() ?? new ArrayCollection();
+            $bSkills = $b->getNeededSkills() ?? new ArrayCollection();
 
-            $aSharedCount = count(array_intersect(
+            $aMatchCount = count(array_intersect(
                 $skillIds,
                 array_map(fn ($skill) => $skill->getId(), $aSkills->toArray())
             ));
 
-            $bSharedCount = count(array_intersect(
+            $bMatchCount = count(array_intersect(
                 $skillIds,
                 array_map(fn ($skill) => $skill->getId(), $bSkills->toArray())
             ));
 
-            return $bSharedCount <=> $aSharedCount;
+            return $bMatchCount <=> $aMatchCount;
         });
 
-        return $matches;
+        return $events;
     }
 
     public function getName(): string
@@ -56,6 +62,6 @@ class SkillBasedStrategy implements MatchingStrategyInterface
 
     public function getDescription(): string
     {
-        return 'Matches volunteers based on shared skills, prioritizing those with the most skills in common.';
+        return 'Matches events based on needed skills that match your skills, prioritizing those with the most skill matches.';
     }
 }

@@ -2,15 +2,16 @@
 
 namespace App\Matching\Strategy;
 
+use App\Entity\Event;
 use App\Entity\Volunteer;
-use App\Repository\VolunteerRepository;
+use App\Repository\EventRepository;
 
 class LocationBasedStrategy implements MatchingStrategyInterface
 {
     private const MAX_DISTANCE_KM = 50; // Maximum distance in kilometers for matching
 
     public function __construct(
-        private readonly VolunteerRepository $volunteerRepository,
+        private readonly EventRepository $eventRepository,
     ) {
     }
 
@@ -21,40 +22,36 @@ class LocationBasedStrategy implements MatchingStrategyInterface
             return [];
         }
 
-        $matches = $this->volunteerRepository->findByLocation(
+        $events = $this->eventRepository->findByLocation(
             $profile->getLatitude(),
             $profile->getLongitude(),
-            self::MAX_DISTANCE_KM,
-            $volunteer->getId()
+            self::MAX_DISTANCE_KM
         );
 
-        // Sort matches by distance
-        usort($matches, function (Volunteer $a, Volunteer $b) use ($profile) {
-            $aProfile = $a->getVolunteerProfile();
-            $bProfile = $b->getVolunteerProfile();
-
-            if (!$aProfile || !$bProfile) {
+        // Sort events by distance
+        usort($events, function (Event $a, Event $b) use ($profile) {
+            if (!$a->getLatitude() || !$a->getLongitude() || !$b->getLatitude() || !$b->getLongitude()) {
                 return 0;
             }
 
             $distanceA = $this->calculateDistance(
                 $profile->getLatitude(),
                 $profile->getLongitude(),
-                $aProfile->getLatitude(),
-                $aProfile->getLongitude()
+                $a->getLatitude(),
+                $a->getLongitude()
             );
 
             $distanceB = $this->calculateDistance(
                 $profile->getLatitude(),
                 $profile->getLongitude(),
-                $bProfile->getLatitude(),
-                $bProfile->getLongitude()
+                $b->getLatitude(),
+                $b->getLongitude()
             );
 
             return $distanceA <=> $distanceB;
         });
 
-        return $matches;
+        return $events;
     }
 
     public function getName(): string
@@ -64,7 +61,7 @@ class LocationBasedStrategy implements MatchingStrategyInterface
 
     public function getDescription(): string
     {
-        return sprintf('Matches volunteers within %d kilometers, sorted by proximity.', self::MAX_DISTANCE_KM);
+        return sprintf('Matches events within %d kilometers of your location, sorted by proximity.', self::MAX_DISTANCE_KM);
     }
 
     /**

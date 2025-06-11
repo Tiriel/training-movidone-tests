@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use App\Matching\VolunteerMatcher;
+use App\Entity\Volunteer;
 
 class EventController extends AbstractController
 {
@@ -58,10 +60,15 @@ class EventController extends AbstractController
     }
 
     #[Route('/events/match/{strategy}', name: 'app_event_match', requirements: ['strategy' => 'tag|skill|location'])]
-    public function match(string $strategy, #[CurrentUser] User $user, TagBasedStrategy $tagStrategy): Response
+    public function match(string $strategy, #[CurrentUser] User $user, VolunteerMatcher $matcher): Response
     {
+        $volunteer = new Volunteer();
+        $volunteer->setForUser($user);
+
+        $events = $matcher->findMatches($volunteer, $strategy.'_based');
+
         return $this->render('event/list_events.html.twig', [
-            'events' => $tagStrategy->match($user),
+            'events' => $events,
         ]);
     }
 }

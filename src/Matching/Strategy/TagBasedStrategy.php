@@ -2,21 +2,26 @@
 
 namespace App\Matching\Strategy;
 
+use App\Entity\Event;
 use App\Entity\Volunteer;
-use App\Repository\VolunteerRepository;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class TagBasedStrategy implements MatchingStrategyInterface
 {
     public function __construct(
-        private readonly VolunteerRepository $volunteerRepository,
+        private readonly EventRepository $eventRepository,
     ) {
     }
 
     public function match(Volunteer $volunteer): array
     {
-        $volunteerTags = $volunteer->getVolunteerProfile()?->getTags() ?? new Collection();
+        $volunteerProfile = $volunteer->getVolunteerProfile();
+        if (!$volunteerProfile) {
+            return [];
+        }
 
+        $volunteerTags = $volunteerProfile->getInterests();
         if ($volunteerTags->isEmpty()) {
             return [];
         }
@@ -26,27 +31,28 @@ class TagBasedStrategy implements MatchingStrategyInterface
             $volunteerTags->toArray()
         );
 
-        $matches = $this->volunteerRepository->findBySharedTags($tagIds, $volunteer->getId());
+        // Find events that have any of the volunteer's interest tags
+        $events = $this->eventRepository->findForTags($tagIds);
 
-        // Sort matches by number of shared tags
-        usort($matches, function (Volunteer $a, Volunteer $b) use ($tagIds) {
-            $aTags = $a->getVolunteerProfile()?->getTags() ?? new Collection();
-            $bTags = $b->getVolunteerProfile()?->getTags() ?? new Collection();
+        // Sort events by number of matching tags (most matches first)
+        usort($events, function (Event $a, Event $b) use ($tagIds) {
+            $aTags = $a->getTags() ?? new ArrayCollection();
+            $bTags = $b->getTags() ?? new ArrayCollection();
 
-            $aSharedCount = count(array_intersect(
+            $aMatchCount = count(array_intersect(
                 $tagIds,
                 array_map(fn ($tag) => $tag->getId(), $aTags->toArray())
             ));
 
-            $bSharedCount = count(array_intersect(
+            $bMatchCount = count(array_intersect(
                 $tagIds,
                 array_map(fn ($tag) => $tag->getId(), $bTags->toArray())
             ));
 
-            return $bSharedCount <=> $aSharedCount;
+            return $bMatchCount <=> $aMatchCount;
         });
 
-        return $matches;
+        return $events;
     }
 
     public function getName(): string
@@ -56,6 +62,6 @@ class TagBasedStrategy implements MatchingStrategyInterface
 
     public function getDescription(): string
     {
-        return 'Matches volunteers based on shared interest tags, prioritizing those with the most tags in common.';
+        return 'Matches events based on tags that match your interests, prioritizing those with the most tag matches.';
     }
 }
