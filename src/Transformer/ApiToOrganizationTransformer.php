@@ -11,6 +11,6 @@ class ApiToOrganizationTransformer implements ApiToEntityTransformerInterface
         return (new Organization())
             ->setName($data['name'])
             ->setPresentation($data['presentation'])
-            ->setCreatedAt(new \DateTimeImmutable($data['createdAt']));
+            ->setCreatedAt(new \DateTimeImmutable($data['createdAt'] ?? null));
     }
 }
