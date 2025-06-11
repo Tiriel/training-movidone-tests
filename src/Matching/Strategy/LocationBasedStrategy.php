@@ -3,6 +3,7 @@
 namespace App\Matching\Strategy;
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Entity\Volunteer;
 use App\Repository\EventRepository;
 
@@ -15,9 +16,9 @@ class LocationBasedStrategy implements MatchingStrategyInterface
     ) {
     }
 
-    public function match(Volunteer $volunteer): array
+    public function match(User $user): array
     {
-        $profile = $volunteer->getVolunteerProfile();
+        $profile = $user->getVolunteerProfile();
         if (!$profile || !$profile->getLatitude() || !$profile->getLongitude()) {
             return [];
         }

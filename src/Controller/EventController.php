@@ -62,10 +62,7 @@ class EventController extends AbstractController
     #[Route('/events/match/{strategy}', name: 'app_event_match', requirements: ['strategy' => 'tag|skill|location'])]
     public function match(string $strategy, #[CurrentUser] User $user, VolunteerMatcher $matcher): Response
     {
-        $volunteer = new Volunteer();
-        $volunteer->setForUser($user);
-
-        $events = $matcher->findMatches($volunteer, $strategy.'_based');
+        $events = $matcher->findMatches($user, $strategy.'_based');
 
         return $this->render('event/list_events.html.twig', [
             'events' => $events,

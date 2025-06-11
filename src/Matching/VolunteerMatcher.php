@@ -2,7 +2,8 @@
 
 namespace App\Matching;
 
-use App\Entity\Volunteer;
+use App\Entity\Event;
+use App\Entity\User;
 use App\Matching\Strategy\MatchingStrategyInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
@@ -46,27 +47,27 @@ class VolunteerMatcher
     /**
      * Find matches using a specific strategy.
      *
-     * @return array<Volunteer>
+     * @return array<Event>
      */
-    public function findMatches(Volunteer $volunteer, string $strategyName): array
+    public function findMatches(User $user, string $strategyName): array
     {
         if (!isset($this->strategies[$strategyName])) {
             throw new \InvalidArgumentException(sprintf('Strategy "%s" not found. Available strategies: %s', $strategyName, implode(', ', array_keys($this->strategies))));
         }
 
-        return $this->strategies[$strategyName]->match($volunteer);
+        return $this->strategies[$strategyName]->match($user);
     }
 
     /**
      * Find matches using all available strategies.
      *
-     * @return array<string, array<Volunteer>>
+     * @return array<string, array<Event>>
      */
-    public function findMatchesUsingAllStrategies(Volunteer $volunteer): array
+    public function findMatchesUsingAllStrategies(User $user): array
     {
         $results = [];
         foreach ($this->strategies as $name => $strategy) {
-            $results[$name] = $strategy->match($volunteer);
+            $results[$name] = $strategy->match($user);
         }
 
         return $results;

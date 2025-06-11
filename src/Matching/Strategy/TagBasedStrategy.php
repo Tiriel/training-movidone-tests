@@ -3,7 +3,7 @@
 namespace App\Matching\Strategy;
 
 use App\Entity\Event;
-use App\Entity\Volunteer;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -14,9 +14,9 @@ class TagBasedStrategy implements MatchingStrategyInterface
     ) {
     }
 
-    public function match(Volunteer $volunteer): array
+    public function match(User $user): array
     {
-        $volunteerProfile = $volunteer->getVolunteerProfile();
+        $volunteerProfile = $user->getVolunteerProfile();
         if (!$volunteerProfile) {
             return [];
         }
